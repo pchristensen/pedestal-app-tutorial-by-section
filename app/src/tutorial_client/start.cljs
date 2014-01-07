@@ -12,7 +12,7 @@
         render-fn (push-render/renderer "content" render-config render/log-fn)
         app-model (render/consume-app-model app render-fn)]
     (app/begin app)
-    (p/put-message (:input app) {msg/type :set-value msg/topic [:greeting] :value "Hello World!"})
+    (p/put-message (:input app) {msg/type :inc msg/topic [:my-counter]})
     {:app app :app-model app-model}))
 
 (defn ^:export main []
