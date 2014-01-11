@@ -9,6 +9,9 @@
 (defn swap-transform [_ message]
   (:value message))
 
+(defn publish-counter [count]
+  [{msg/type :swap msg/topic [:other-counters] :value count}])
+
 (defn init-main [_]
   [[:transform-enable [:main :my-counter] :inc [{msg/topic [:my-counter]}]]])
 
@@ -16,5 +19,6 @@
   {:version 2
    :transform [[:inc  [:my-counter] inc-transform]
                [:swap [:**] swap-transform]]
+   :effect #{[#{[:my-counter]} publish-counter :single-val]}
    :emit [{:init init-main}
           [#{[:my-counter] [:other-counters :*]} (app/default-emitter [:main])]]})
