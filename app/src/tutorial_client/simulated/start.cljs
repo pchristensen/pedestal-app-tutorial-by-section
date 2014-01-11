@@ -5,13 +5,16 @@
             [goog.Uri]
             ;; This needs to be included somewhere in order for the
             ;; tools to work.
-            [io.pedestal.app-tools.tooling :as tooling]))
+            [io.pedestal.app-tools.tooling :as tooling]
+            [io.pedestal.app.protocols :as p]
+            [tutorial-client.simulated.services :as services]))
 
 (defn param [name]
   (let [uri (goog.Uri. (.toString  (.-location js/document)))]
     (.getParameterValue uri name)))
 
 (defn ^:export main []
-  (start/create-app (if (= "auto" (param "renderer"))
-                      d/data-renderer-config
-                      (rendering/render-config))))
+  (let [app (start/create-app d/data-renderer-config)
+        services (services/->MockServices (:app app))]
+    (p/start services)
+    app))
