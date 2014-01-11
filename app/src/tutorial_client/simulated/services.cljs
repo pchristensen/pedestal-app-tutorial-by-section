@@ -15,6 +15,9 @@
   (increment-counter "abc" 2000 input-queue)
   (increment-counter "xyz" 5000 input-queue))
 
+(defn services-fn [message input-queue]
+  (.log js/console (str "Sending message to server: " message)))
+
 (defrecord MockServices [app]
   p/Activity
   (start [this]
