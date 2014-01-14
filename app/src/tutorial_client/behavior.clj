@@ -18,6 +18,9 @@
 (defn maximum [old-value nums]
   (apply max (or old-value 0) nums))
 
+(defn average-count [_ {:keys [total nums]}]
+  (/ total (count nums)))
+
 (defn init-main [_]
   [[:transform-enable [:main :my-counter] :inc [{msg/topic [:my-counter]}]]])
 
@@ -27,9 +30,14 @@
                [:swap [:**] swap-transform]]
    :effect #{[#{[:my-counter]} publish-counter :single-val]}
    :derive #{[#{[:my-counter] [:other-counters :*]} [:total-count] total-count :vals]
-             [#{[:my-counter] [:other-counters :*]} [:max-count] maximum :vals]}
+             [#{[:my-counter] [:other-counters :*]} [:max-count] maximum :vals]
+             [{[:my-counter] :nums
+               [:other-counters :*] :nums
+               [:total-count] :total}
+              [:average-count] average-count :map]}
    :emit [{:init init-main}
           [#{[:my-counter]
              [:other-counters :*]
              [:total-count]
-             [:max-count]} (app/default-emitter [:main])]]})
+             [:max-count]
+             [:average-count]} (app/default-emitter [:main])]]})
