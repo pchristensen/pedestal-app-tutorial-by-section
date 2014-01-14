@@ -21,6 +21,16 @@
 (defn average-count [_ {:keys [total nums]}]
   (/ total (count nums)))
 
+(defn cumulative-average [debug key x]
+  (let [k (last key)
+        i (inc (or (::avg-count debug) 0))
+        avg (or (::avg-raw debug) 0)
+        new-avg (+ avg (/ (- x avg) i))]
+    (assoc debug
+      ::avg-count i
+      ::avg-raw new-avg
+      (keyword (str (name k) "-avg")) (int new-avg))))
+
 (defn merge-counters [_ {:keys [me others]}]
   (assoc others "Me" me))
 
@@ -34,12 +44,16 @@
                [:debug [:pedestal :**] swap-transform]]
    :debug true
    :effect #{[#{[:my-counter]} publish-counter :single-val]}
-   :derive #{[{[:my-counter] :me [:other-counters] :others} [:counters] merge-counters :map]
+   :derive #{[#{[:pedestal :debug :dataflow-time]} [:pedestal :debug :dataflow-time-max] maximum :vals]
+             [#{[:pedestal :debug :dataflow-time]} [:pedestal :debug] cumulative-average :map-seq]
+             [{[:my-counter] :me [:other-counters] :others} [:counters] merge-counters :map]
              [#{[:counters :*]} [:total-count] total-count :vals]
              [#{[:counters :*]} [:max-count] maximum :vals]
              [{[:counters :*] :nums [:total-count] :total} [:average-count] average-count :map]}
    :emit [{:init init-main}
-          [#{[:pedestal :debug :*]} (app/default-emitter [])]
+          [#{[:pedestal :debug :dataflow-time]
+             [:pedestal :debug :dataflow-time-max]
+             [:pedestal :debug :dataflow-time-avg]} (app/default-emitter [])]
           [#{[:my-counter]
              [:other-counters :*]
              [:total-count]
