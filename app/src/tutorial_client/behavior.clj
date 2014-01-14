@@ -21,6 +21,9 @@
 (defn average-count [_ {:keys [total nums]}]
   (/ total (count nums)))
 
+(defn merge-counters [_ {:keys [me others]}]
+  (assoc others "Me" me))
+
 (defn init-main [_]
   [[:transform-enable [:main :my-counter] :inc [{msg/topic [:my-counter]}]]])
 
@@ -29,12 +32,10 @@
    :transform [[:inc  [:my-counter] inc-transform]
                [:swap [:**] swap-transform]]
    :effect #{[#{[:my-counter]} publish-counter :single-val]}
-   :derive #{[#{[:my-counter] [:other-counters :*]} [:total-count] total-count :vals]
-             [#{[:my-counter] [:other-counters :*]} [:max-count] maximum :vals]
-             [{[:my-counter] :nums
-               [:other-counters :*] :nums
-               [:total-count] :total}
-              [:average-count] average-count :map]}
+   :derive #{[{[:my-counter] :me [:other-counters] :others} [:counters] merge-counters :map]
+             [#{[:counters :*]} [:total-count] total-count :vals]
+             [#{[:counters :*]} [:max-count] maximum :vals]
+             [{[:counters :*] :nums [:total-count] :total} [:average-count] average-count :map]}
    :emit [{:init init-main}
           [#{[:my-counter]
              [:other-counters :*]
