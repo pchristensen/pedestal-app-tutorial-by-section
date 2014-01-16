@@ -1,13 +1,61 @@
 <_within file="application.html">
-  
+
   <div id="content">
 
-    <div template="hello" field="id:id">
-
+    <!--<div template="hello" field="id:id">
       <div field="content:message" class="message">A Message</div>
+    </div> -->
 
+    <div class="row-fluid" template="tutorial" field="id:id">
+      <div class="span6">
+        <div>
+          <button class="btn btn-success" id="inc-button">Increment Counter</button>
+        </div>
+        <div class="counter-row">
+          <span class="counter-label">Counter:</span>
+          <span class="counter" field="content:my-counter">40</span>
+        </div>
+        <div id="other-counters">
+          <div template="other-counter" class="counter-row" field="id:id">
+            <span class="counter-label">Counter for <span field="content:counter-id">ahbnytnh</span>:</span>
+            <span class="counter" field="content:count">10</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="span2">
+        <div class="stat-label">
+          Max Count
+        </div>
+        <div class="stat" field="content:max-count">40</div>
+
+        <div class="stat-label">
+          Avg Count
+        </div>
+        <div class="stat" field="content:average-count">25</div>
+
+        <div class="stat-label">
+          Total Count
+        </div>
+        <div class="Stat" field="content:total-count">50</div>
+      </div>
+      <div class="span3">
+        <div class="stat-label">
+          Max Dataflow Time
+        </div>
+        <div class="stat" field="content:dataflow-time-max">35</div>
+
+        <div class="stat-label">
+          Avg Dataflow Time
+        </div>
+        <div class="stat" field="content:dataflow-time-avg">9</div>
+
+        <div class="stat-label">
+          Current Dataflow Time
+        </div>
+        <div class="stat" field="content:dataflow-time">6</div>
+      </div>
     </div>
-
   </div>
 
 </_within>
