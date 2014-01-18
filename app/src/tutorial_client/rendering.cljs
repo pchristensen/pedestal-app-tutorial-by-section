@@ -19,7 +19,9 @@
 
 (defn render-config []
   [[:node-create  [:main] render-template]
-   [:node-destroy [:main] h/default-destroy]])
+   [:node-destroy [:main] h/default-destroy]
+   [:transform-enable [:main :my-counter] (h/add-send-on-click "inc-button")]
+   [:transform-disable [:main :my-counter] (h/remove-send-on-click "inc-button")]])
 
 (defn render-template [renderer [_ path] _]
   (let [parent (render/get-parent-id renderer path)
