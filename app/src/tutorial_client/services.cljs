@@ -1,5 +1,5 @@
 (ns tutorial-client.services
-  (:requre [io.pedestal.app.protocols :as p]
+  (:require [io.pedestal.app.protocols :as p]
            [cljs.reader :as reader]))
 
 (defn receive-ss-event [app e]
