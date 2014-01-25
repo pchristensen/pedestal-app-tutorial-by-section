@@ -220,3 +220,51 @@ var Leaderboard = function(paper, x, y){
     }
   };
 };
+
+var BubbleGame = function(id){
+  var paper = Raphael(id, 800, 400);
+
+  var bars = Bars([Bar(paper, 0, 380, [{name: "total-count"},
+                                       {name: "max-count"},
+                                       {name: "average-count"}]),
+                   Bar(paper, 0, 357, [{name: "dataflow-time-max"},
+                                       {name: "dataflow-time-avg"},
+                                       {name: "dataflow-time"}])]);
+
+  var circles = Circles(paper, 500, 380);
+
+  var leaderboard = Leaderboard(paper, 550, 0);
+
+  var destroy = function(){
+    circles.destroy();
+    circles = null;
+    bars.destroy();
+    bars = null;
+    leaderboard = null;
+    paper.remove();
+    paper = null;
+  };
+
+  // This will be removed as we make improvements to the game.
+  // The dataflow will control when circles are created.
+  var makeCircles = function(){
+    if(leaderboard){
+      var p = leaderboard.count();
+      for(var i=0;i<p;i++){
+        circles.addCircle();
+      };
+    };
+  };
+  setInterval(makeCircles, 2000);
+
+  return {
+    addHandler: circles.addScoreReporter,
+    addPlayer: leaderboard.addPlayer,
+    setScore: leaderboard.setScore,
+    setOrder: leaderboard.setOrder,
+    setStat: bars.setSize,
+    addBubble: circles.addCircle,
+    removeBubble: circles.removeCircle,
+    destroy: destroy
+  };
+};
