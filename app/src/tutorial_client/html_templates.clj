@@ -3,5 +3,4 @@
 
 (defmacro tutorial-client-templates
   []
-  {:tutorial-client-page (dtfn (tnodes "tutorial-client.html" "tutorial" [[:#other-counters]]) #{:id})
-   :other-counter (dtfn (tnodes "tutorial-client.html" "other-counter") #{:id})})
+  {:tutorial-client-page (dtfn (tnodes "game.html" "tutorial") #{:id})})

@@ -51,11 +51,10 @@
              [#{[:counters :*]} [:max-count] maximum :vals]
              [{[:counters :*] :nums [:total-count] :total} [:average-count] average-count :map]}
    :emit [{:init init-main}
+          [#{[:total-count]
+             [:max-count]
+             [:average-count]} (app/default-emitter [:main])]
+          [#{[:counters :*]} (app/default-emitter [:main])]
           [#{[:pedestal :debug :dataflow-time]
              [:pedestal :debug :dataflow-time-max]
-             [:pedestal :debug :dataflow-time-avg]} (app/default-emitter [])]
-          [#{[:my-counter]
-             [:other-counters :*]
-             [:total-count]
-             [:max-count]
-             [:average-count]} (app/default-emitter [:main])]]})
+             [:pedestal :debug :dataflow-time-avg]} (app/default-emitter [])]]})
