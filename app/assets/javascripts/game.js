@@ -110,7 +110,7 @@ var Circles = function(paper, w, h) {
           removeCounter--;
         };
         moveCircle(c);
-      };
+      });
     };
   };
 
@@ -164,7 +164,7 @@ var Player = function(paper, x, y, name) {
 
   var nameText = paper.text(x, y, name).attr({
     "font-size": fontSize,
-    "text-anchor": "start"});
+    "text-anchor": "start"
   });
   var scoreText = paper.text(x + nameLength, y, score).attr({
     "font-size": fontSize,
