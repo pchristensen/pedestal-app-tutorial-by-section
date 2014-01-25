@@ -155,3 +155,31 @@ var Circles = function(paper, w, h) {
     destroy: destroy
   };
 };
+
+var Player = function(paper, x, y, name) {
+  var nameLength = 150;
+  var fontSize = 20;
+
+  var score = 0;
+
+  var nameText = paper.text(x, y, name).attr({
+    "font-size": fontSize,
+    "text-anchor": "start"});
+  });
+  var scoreText = paper.text(x + nameLength, y, score).attr({
+    "font-size": fontSize,
+    "text-anchor": "end"
+  });
+  var st = paper.set();
+  st.push(nameText, scoreText);
+
+  return {
+    setScore: function(n) {
+      score = n;
+      scoreText.attr({text: score});
+    },
+    moveTo: function(y) {
+      st.animate({y: y}, 400);
+    }
+  };
+};
