@@ -183,3 +183,40 @@ var Player = function(paper, x, y, name) {
     }
   };
 };
+
+var Leaderboard = function(paper, x, y){
+  var playerSpacing = 30;
+  var players = {};
+
+  var playerY = function(i){
+    return 50 + (i * playerSpacing);
+  };
+
+  var countPlayers = function(){
+    var count = 0;
+    for(var i in players){
+      if (players.hasOwnProperty(i))
+        count++;
+    };
+  };
+
+  return {
+    addPlayer: function(name){
+      var i = countPlayers();
+      var p = Player(paper, x, playerY(i), name);
+      players[name] = p;
+    },
+    setScore: function(name, score){
+      var p = players[name];
+      p.setScore(score);
+    },
+    setOrder: function(name, i){
+      var p = players[name];
+      if (p)
+        p.moveTo(playerY(i));
+    },
+    count: function(){
+      return countPlayers();
+    }
+  };
+};
