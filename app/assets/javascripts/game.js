@@ -198,6 +198,7 @@ var Leaderboard = function(paper, x, y){
       if (players.hasOwnProperty(i))
         count++;
     };
+    return count;
   };
 
   return {

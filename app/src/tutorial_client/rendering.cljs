@@ -15,8 +15,8 @@
         html (templates/add-template renderer path (:tutorial-client-page templates))]
     (dom/append! (dom/by-id parent) (html {:id id}))
     (let [g (js/BubbleGame. "game-board")]
-      (renderer/set-data! renderer path g)
-      (dotimes [_ 5] (.add-Bubble g)))))
+      (render/set-data! renderer path g)
+      (dotimes [_ 5] (.addBubble g)))))
 
 (defn game [renderer]
   (render/get-data renderer [:main]))
@@ -38,17 +38,17 @@
         g (game renderer)]
     (.setScore g n v)
     (when (not= n "Me")
-      (.removeBuble g))))
+      (.removeBubble g))))
 
 (defn set-stat [renderer [_ path _ v] _]
   (let [s (last path)]
     (if-let [g (game renderer)]
       (.setStat g (name s) v))))
 
-(defn add-handler [renderer [_path transform-name messages] input-queue]
+(defn add-handler [renderer [_ path transform-name messages] input-queue]
   (.addHandler (game renderer)
                (fn [p]
-                 (events/send-transform input-queue transform-name messages))))
+                 (events/send-transforms input-queue transform-name messages))))
 
 (defn render-page [renderer [_ path] transmitter]
   (let [parent (render/get-parent-id renderer path)
