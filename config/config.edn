@@ -108,6 +108,7 @@
             :production {:uri "/tutorial-client.html"
                          :name "Production"
                          :optimizations :advanced
+                         :compiler-options {:externs ["app/externs/game.js"]}
                          :out-file "tutorial-client.js"
                          :main tutorial_client.start
                          :use-api-server? true
