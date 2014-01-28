@@ -34,6 +34,11 @@
 (defn merge-counters [_ {:keys [me others]}]
   (assoc others "Me" me))
 
+(defn sort-players [_ players]
+  (into {} (map-indexed (fn [i [k v]] [k i])
+                        (reverse
+                         (sort-by second (map (fn [[k v]] [k v]) players))))))
+
 (defn init-main [_]
   [[:transform-enable [:main :my-counter] :inc [{msg/topic [:my-counter]}]]])
 
@@ -47,6 +52,7 @@
    :derive #{[#{[:pedestal :debug :dataflow-time]} [:pedestal :debug :dataflow-time-max] maximum :vals]
              [#{[:pedestal :debug :dataflow-time]} [:pedestal :debug] cumulative-average :map-seq]
              [{[:my-counter] :me [:other-counters] :others} [:counters] merge-counters :map]
+             [#{[:counters]} [:player-order] sort-players :single-val]
              [#{[:counters :*]} [:total-count] total-count :vals]
              [#{[:counters :*]} [:max-count] maximum :vals]
              [{[:counters :*] :nums [:total-count] :total} [:average-count] average-count :map]}
@@ -55,6 +61,7 @@
              [:max-count]
              [:average-count]} (app/default-emitter [:main])]
           [#{[:counters :*]} (app/default-emitter [:main])]
+          [#{[:player-order :*]} (app/default-emitter [:main])]
           [#{[:pedestal :debug :dataflow-time]
              [:pedestal :debug :dataflow-time-max]
              [:pedestal :debug :dataflow-time-avg]} (app/default-emitter [])]]})

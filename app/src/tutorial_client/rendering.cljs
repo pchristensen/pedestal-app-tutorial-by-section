@@ -45,6 +45,10 @@
     (if-let [g (game renderer)]
       (.setStat g (name s) v))))
 
+(defn set-player-order [renderer [_ path _ v] _]
+  (let [n (last path)]
+    (.setOrder (game renderer) n v)))
+
 (defn add-handler [renderer [_ path transform-name messages] input-queue]
   (.addHandler (game renderer)
                (fn [p]
@@ -64,6 +68,7 @@
    [:node-destroy [:main] destroy-game]
    [:node-create [:main :counters :*] add-player]
    [:value [:main :counters :*] set-score]
+   [:value [:main :player-order :*] set-player-order]
    [:value [:pedestal :debug :*] set-stat]
    [:value [:main :*] set-stat]
    [:transform-enable [:main :my-counter] add-handler]])
