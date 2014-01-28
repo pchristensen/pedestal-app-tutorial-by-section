@@ -42,13 +42,20 @@
 (defn add-bubbles [_ {:keys [clock players]}]
   {:clock clock :count (count players)})
 
+(defn add-points [old-value message]
+  (if-let [points (int (:points message))]
+    (+ old-value points)
+    old-value))
+
 (defn init-main [_]
-  [[:transform-enable [:main :my-counter] :inc [{msg/topic [:my-counter]}]]])
+  [[:transform-enable [:main :my-counter]
+    :add-points [{msg/topic [:my-counter] (msg/param :points) {}}]]])
 
 (def example-app
   {:version 2
    :transform [[:inc  [:*] inc-transform]
                [:swap [:**] swap-transform]
+               [:add-points [:my-counter] add-points]
                [:debug [:pedestal :**] swap-transform]]
    :debug true
    :effect #{[#{[:my-counter]} publish-counter :single-val]}
