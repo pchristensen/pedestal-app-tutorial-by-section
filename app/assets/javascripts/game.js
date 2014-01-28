@@ -246,18 +246,6 @@ var BubbleGame = function(id){
     paper = null;
   };
 
-  // This will be removed as we make improvements to the game.
-  // The dataflow will control when circles are created.
-  var makeCircles = function(){
-    if(leaderboard){
-      var p = leaderboard.count();
-      for(var i=0;i<p;i++){
-        circles.addCircle();
-      };
-    };
-  };
-  setInterval(makeCircles, 2000);
-
   return {
     addHandler: circles.addScoreReporter,
     addPlayer: leaderboard.addPlayer,

@@ -96,6 +96,7 @@ var startGame = function(){
   updateDataflowStats();
   updatePlayerScores();
   updatePlayerOrder();
+  makeCircles();
 };
 
 var endGame = function(){
@@ -103,6 +104,17 @@ var endGame = function(){
   gameActive = false;
   game.destroy();
 };
+
+var makeCircles = function(){
+  if(gameActive){
+    var p = players.length;
+    for(var i=0;i<p;i++){
+      game.addBubble();
+    };
+    setTimeout(makeCircles, 2000);
+  };
+};
+
 
 setTimeout(startGame, 1000);
 setTimeout(endGame, 10000);
