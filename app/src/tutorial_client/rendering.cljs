@@ -56,7 +56,7 @@
 (defn add-handler [renderer [_ path transform-name messages] input-queue]
   (.addHandler (game renderer)
                (fn [p]
-                 (events/send-transforms input-queue transform-name messages))))
+                 (events/send-transforms input-queue transform-name messages {:points p}))))
 
 (defn render-page [renderer [_ path] transmitter]
   (let [parent (render/get-parent-id renderer path)
