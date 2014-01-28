@@ -7,12 +7,14 @@
             [tutorial-client.behavior :as behavior]
             [tutorial-client.rendering :as rendering]
             [tutorial-client.post-processing :as post]
-            [tutorial-client.services :as services]))
+            [tutorial-client.services :as services]
+            [tutorial-client.clock :as clock]))
 
 (defn create-app [render-config]
   (let [app (app/build (post/add-post-processors behavior/example-app))
         render-fn (push-render/renderer "content" render-config render/log-fn)
         app-model (render/consume-app-model app render-fn)]
+    (clock/increment-game-clock (:input app))
     (app/begin app)
     {:app app :app-model app-model}))
 

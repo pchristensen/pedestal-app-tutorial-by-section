@@ -44,7 +44,7 @@
 
 (def example-app
   {:version 2
-   :transform [[:inc  [:my-counter] inc-transform]
+   :transform [[:inc  [:*] inc-transform]
                [:swap [:**] swap-transform]
                [:debug [:pedestal :**] swap-transform]]
    :debug true
@@ -60,6 +60,7 @@
           [#{[:total-count]
              [:max-count]
              [:average-count]} (app/default-emitter [:main])]
+          [#{[:clock]} (app/default-emitter [:main])]
           [#{[:counters :*]} (app/default-emitter [:main])]
           [#{[:player-order :*]} (app/default-emitter [:main])]
           [#{[:pedestal :debug :dataflow-time]
