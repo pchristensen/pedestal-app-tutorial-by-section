@@ -33,6 +33,10 @@
 (defn add-player [renderer [_ path] _]
   (.addPlayer (game renderer) (last path)))
 
+(defn add-bubbles [renderer [_ path _ v] _]
+  (dotimes [x (:count v)]
+    (.addBubble (game renderer))))
+
 (defn set-score [renderer [_ path _ v] _]
   (let [n (last path)
         g (game renderer)]
@@ -69,6 +73,7 @@
    [:node-create [:main :counters :*] add-player]
    [:value [:main :counters :*] set-score]
    [:value [:main :player-order :*] set-player-order]
+   [:value [:main :add-bubbles] add-bubbles]
    [:value [:pedestal :debug :*] set-stat]
    [:value [:main :*] set-stat]
    [:transform-enable [:main :my-counter] add-handler]])

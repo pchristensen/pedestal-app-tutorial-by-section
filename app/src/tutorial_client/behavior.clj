@@ -39,6 +39,9 @@
                         (reverse
                          (sort-by second (map (fn [[k v]] [k v]) players))))))
 
+(defn add-bubbles [_ {:keys [clock players]}]
+  {:clock clock :count (count players)})
+
 (defn init-main [_]
   [[:transform-enable [:main :my-counter] :inc [{msg/topic [:my-counter]}]]])
 
@@ -55,12 +58,13 @@
              [#{[:counters]} [:player-order] sort-players :single-val]
              [#{[:counters :*]} [:total-count] total-count :vals]
              [#{[:counters :*]} [:max-count] maximum :vals]
-             [{[:counters :*] :nums [:total-count] :total} [:average-count] average-count :map]}
+             [{[:counters :*] :nums [:total-count] :total} [:average-count] average-count :map]
+             [{[:clock] :clock [:counters] :players} [:add-bubbles] add-bubbles :map]}
    :emit [{:init init-main}
           [#{[:total-count]
              [:max-count]
              [:average-count]} (app/default-emitter [:main])]
-          [#{[:clock]} (app/default-emitter [:main])]
+          [#{[:add-bubbles]} (app/default-emitter [:main])]
           [#{[:counters :*]} (app/default-emitter [:main])]
           [#{[:player-order :*]} (app/default-emitter [:main])]
           [#{[:pedestal :debug :dataflow-time]
