@@ -58,6 +58,19 @@
                (fn [p]
                  (events/send-transforms input-queue transform-name messages {:points p}))))
 
+(defn add-login-template [renderer [_ path :as delta] input-queue]
+  (let [parent (render/get-parent-id renderer path)
+        id (render/new-id! renderer path)
+        html (:login-page templates)]
+    (dom/append! (dom/by-id parent) (html {:id id}))))
+
+(defn add-submit-login-handler [_ [_ path transform-name messages] input-queue]
+  (events/collect-and-send :click "login-button" input-queue transform-name messages
+                           {"login-name" :value}))
+
+(defn remove-submit-login-event [_ _ _]
+  (events/remove-click-event "login-button"))
+
 (defn render-page [renderer [_ path] transmitter]
   (let [parent (render/get-parent-id renderer path)
         id (render/new-id! renderer path)
@@ -68,7 +81,7 @@
   (templates/update-t renderer path {:message new-value}))
 
 (defn render-config []
-  [[:node-create [:main] add-template]
+  [[:node-create  [:main] add-template]
    [:node-destroy [:main] destroy-game]
    [:node-create [:main :counters :*] add-player]
    [:value [:main :counters :*] set-score]
@@ -76,4 +89,8 @@
    [:value [:main :add-bubbles] add-bubbles]
    [:value [:pedestal :debug :*] set-stat]
    [:value [:main :*] set-stat]
-   [:transform-enable [:main :my-counter] add-handler]])
+   [:transform-enable [:main :my-counter] add-handler]
+   [:node-create  [:login] add-login-template]
+   [:node-destroy [:login] h/default-destroy]
+   [:transform-enable  [:login :name] add-submit-login-handler]
+   [:transform-disable [:login :name] remove-submit-login-event]])
