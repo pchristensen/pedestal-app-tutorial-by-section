@@ -51,6 +51,12 @@
   [[:transform-enable [:main :my-counter]
     :add-points [{msg/topic [:my-counter] (msg/param :points) {}}]]])
 
+(defn init-login [_]
+  [{:login
+    {:name
+     {:transforms
+      {:login [{msg/type :swap msg/topic [:login :name] (msg/param :value) {}}]}}}}])
+
 (def example-app
   {:version 2
    :transform [[:inc  [:*] inc-transform]
@@ -67,7 +73,9 @@
              [#{[:counters :*]} [:max-count] maximum :vals]
              [{[:counters :*] :nums [:total-count] :total} [:average-count] average-count :map]
              [{[:clock] :clock [:counters] :players} [:add-bubbles] add-bubbles :map]}
-   :emit [{:init init-main}
+   :emit [{:init init-login}
+          [#{[:login :*]} (app/default-emitter [])]
+          {:init init-main}
           [#{[:total-count]
              [:max-count]
              [:average-count]} (app/default-emitter [:main])]
