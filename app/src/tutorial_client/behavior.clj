@@ -31,8 +31,8 @@
       ::avg-raw new-avg
       (keyword (str (name k) "-avg")) (int new-avg))))
 
-(defn merge-counters [_ {:keys [me others]}]
-  (assoc others "Me" me))
+(defn merge-counters [_ {:keys [me others login-name]}]
+  (assoc others login-name me))
 
 (defn sort-players [_ players]
   (into {} (map-indexed (fn [i [k v]] [k i])
@@ -68,7 +68,7 @@
    :effect #{[#{[:my-counter]} publish-counter :single-val]}
    :derive #{[#{[:pedestal :debug :dataflow-time]} [:pedestal :debug :dataflow-time-max] maximum :vals]
              [#{[:pedestal :debug :dataflow-time]} [:pedestal :debug] cumulative-average :map-seq]
-             [{[:my-counter] :me [:other-counters] :others} [:counters] merge-counters :map]
+             [{[:my-counter] :me [:other-counters] :others [:login :name] :login-name} [:counters] merge-counters :map]
              [#{[:counters]} [:player-order] sort-players :single-val]
              [#{[:counters :*]} [:total-count] total-count :vals]
              [#{[:counters :*]} [:max-count] maximum :vals]
