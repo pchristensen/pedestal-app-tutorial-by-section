@@ -55,7 +55,8 @@
   [{:login
     {:name
      {:transforms
-      {:login [{msg/type :swap msg/topic [:login :name] (msg/param :value) {}}]}}}}])
+      {:login [{msg/type :swap msg/topic [:login :name] (msg/param :value) {}}
+               {msg/type :set-focus msg/topic msg/app-model :name :game}]}}}}])
 
 (def example-app
   {:version 2
@@ -84,4 +85,7 @@
           [#{[:player-order :*]} (app/default-emitter [:main])]
           [#{[:pedestal :debug :dataflow-time]
              [:pedestal :debug :dataflow-time-max]
-             [:pedestal :debug :dataflow-time-avg]} (app/default-emitter [])]]})
+             [:pedestal :debug :dataflow-time-avg]} (app/default-emitter [])]]
+   :focus {:login [[:login]]
+           :game  [[:main] [:pedestal]]
+           :default :login}})
