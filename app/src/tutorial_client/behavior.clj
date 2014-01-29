@@ -9,8 +9,8 @@
 (defn swap-transform [_ message]
   (:value message))
 
-(defn publish-counter [count]
-  [{msg/type :swap msg/topic [:other-counters] :value count}])
+(defn publish-counter [{:keys [count name]}]
+  [{msg/type :swap msg/topic [:other-counters name] :value count}])
 
 (defn total-count [_ nums]
   (apply + nums))
@@ -65,7 +65,7 @@
                [:add-points [:my-counter] add-points]
                [:debug [:pedestal :**] swap-transform]]
    :debug true
-   :effect #{[#{[:my-counter]} publish-counter :single-val]}
+   :effect #{[{[:my-counter] :count [:login :name] :name} publish-counter :map]}
    :derive #{[#{[:pedestal :debug :dataflow-time]} [:pedestal :debug :dataflow-time-max] maximum :vals]
              [#{[:pedestal :debug :dataflow-time]} [:pedestal :debug] cumulative-average :map-seq]
              [{[:my-counter] :me [:other-counters] :others [:login :name] :login-name} [:counters] merge-counters :map]
