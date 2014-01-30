@@ -61,6 +61,14 @@
       {:login [{msg/type :swap msg/topic [:login :name] (msg/param :value) {}}
                {msg/type :set-focus msg/topic msg/app-model :name :game}]}}}}])
 
+(defn init-wait [_]
+  (let [start-game {msg/type :swap msg/topic [:active-game] :value true}]
+    [{:wait
+      {:start
+       {:transforms
+        {:start-game [{msg/topic msg/effect :payload start-game}
+                      start-game]}}}}]))
+
 (def example-app
   {:version 2
    :transform [[:inc  [:*] inc-transform]
@@ -81,16 +89,18 @@
    :emit [{:init init-login}
           [#{[:login :*]} (app/default-emitter [])]
           {:init init-main}
+          {:init init-wait}
+          {:in #{[:counters :*]} :fn (app/default-emitter [:wait]) :mode :always}
           [#{[:total-count]
              [:max-count]
              [:average-count]} (app/default-emitter [:main])]
+          {:in #{[:counters :*]} :fn (app/default-emitter [:main]) :mode :always}
           [#{[:add-bubbles]} (app/default-emitter [:main])]
           [#{[:add-bubbles] [:remove-bubbles]} (app/default-emitter [:main])]
-          [#{[:counters :*]} (app/default-emitter [:main])]
           [#{[:player-order :*]} (app/default-emitter [:main])]
           [#{[:pedestal :debug :dataflow-time]
              [:pedestal :debug :dataflow-time-max]
              [:pedestal :debug :dataflow-time-avg]} (app/default-emitter [])]]
    :focus {:login [[:login]]
-           :game  [[:main] [:pedestal]]
+           :game  [[:main] [:pedestal] [:wait]]
            :default :login}})
