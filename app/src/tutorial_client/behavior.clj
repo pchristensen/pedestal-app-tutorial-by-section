@@ -59,7 +59,7 @@
     {:name
      {:transforms
       {:login [{msg/type :swap msg/topic [:login :name] (msg/param :value) {}}
-               {msg/type :set-focus msg/topic msg/app-model :name :game}]}}}}])
+               {msg/type :set-focus msg/topic msg/app-model :name :wait}]}}}}])
 
 (defn init-wait [_]
   (let [start-game {msg/type :swap msg/topic [:active-game] :value true}]
@@ -102,5 +102,6 @@
              [:pedestal :debug :dataflow-time-max]
              [:pedestal :debug :dataflow-time-avg]} (app/default-emitter [])]]
    :focus {:login [[:login]]
-           :game  [[:main] [:pedestal] [:wait]]
+           :wait  [[:wait]]
+           :game  [[:main] [:pedestal]]
            :default :login}})
