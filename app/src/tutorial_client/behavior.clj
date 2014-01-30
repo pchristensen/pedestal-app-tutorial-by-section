@@ -1,7 +1,8 @@
 (ns ^:shared tutorial-client.behavior
     (:require [clojure.string :as string]
               [io.pedestal.app.messages :as msg]
-              [io.pedestal.app :as app]))
+              [io.pedestal.app :as app]
+              [io.pedestal.app.dataflow :as dataflow]))
 
 (defn inc-transform [old-value _]
   ((fnil inc 0) old-value))
@@ -49,6 +50,13 @@
   (if-let [points (int (:points message))]
     (+ old-value points)
     old-value))
+
+(defn start-game [inputs]
+  (let [active (dataflow/old-and-new inputs [:active-game])
+        login (dataflow/old-and-new inputs [:login :name])]
+    (when (or (and (:new login) (not (:old active)) (:new active))
+              (and (:new active) (not (:old login)) (:new login)))
+      [^:input {msg/topic msg/app-model msg/type :set-focus :name :game}])))
 
 (defn init-main [_]
   [[:transform-enable [:main :my-counter]
@@ -104,4 +112,5 @@
    :focus {:login [[:login]]
            :wait  [[:wait]]
            :game  [[:main] [:pedestal]]
-           :default :login}})
+           :default :login}
+   :continue #{[#{[:login :name] [:active-game]} start-game]}})
