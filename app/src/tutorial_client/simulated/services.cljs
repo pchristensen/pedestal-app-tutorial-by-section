@@ -18,11 +18,16 @@
 (defn start-game-simulation [input-queue]
   (receive-messages input-queue))
 
+(defn add-player [name input-queue]
+  (p/put-message input-queue {msg/type :swap
+                              msg/topic [:other-counters name]
+                              :value 0}))
+
 (defrecord MockServices [app]
   p/Activity
   (start [this]
-    ;; this will now simulate adding players
-    )
+    (platform/create-timeout 10000 #(add-player "abc" (:input app)))
+    (platform/create-timeout 15000 #(add-player "xyz" (:input app))))
   (stop [this]))
 
 (defn services-fn [message input-queue]
