@@ -42,6 +42,9 @@
 (defn add-bubbles [_ {:keys [clock players]}]
   {:clock clock :count (count players)})
 
+(defn remove-bubbles [rb other-counters]
+  (assoc rb :total (apply + other-counters)))
+
 (defn add-points [old-value message]
   (if-let [points (int (:points message))]
     (+ old-value points)
@@ -73,7 +76,8 @@
              [#{[:counters :*]} [:total-count] total-count :vals]
              [#{[:counters :*]} [:max-count] maximum :vals]
              [{[:counters :*] :nums [:total-count] :total} [:average-count] average-count :map]
-             [{[:clock] :clock [:counters] :players} [:add-bubbles] add-bubbles :map]}
+             [{[:clock] :clock [:counters] :players} [:add-bubbles] add-bubbles :map]
+             [#{[:other-counters :*]} [:remove-bubbles] remove-bubbles :vals]}
    :emit [{:init init-login}
           [#{[:login :*]} (app/default-emitter [])]
           {:init init-main}
@@ -81,6 +85,7 @@
              [:max-count]
              [:average-count]} (app/default-emitter [:main])]
           [#{[:add-bubbles]} (app/default-emitter [:main])]
+          [#{[:add-bubbles] [:remove-bubbles]} (app/default-emitter [:main])]
           [#{[:counters :*]} (app/default-emitter [:main])]
           [#{[:player-order :*]} (app/default-emitter [:main])]
           [#{[:pedestal :debug :dataflow-time]
