@@ -15,11 +15,17 @@
   (increment-counter "abc" 2000 input-queue)
   (increment-counter "xyz" 5000 input-queue))
 
-(defn services-fn [message input-queue]
-  (.log js/console (str "Sending message to server: " message)))
+(defn start-game-simulation [input-queue]
+  (receive-messages input-queue))
 
 (defrecord MockServices [app]
   p/Activity
   (start [this]
-    (receive-messages (:input app)))
+    ;; this will now simulate adding players
+    )
   (stop [this]))
+
+(defn services-fn [message input-queue]
+  (if (and (= (msg/topic message) [:active-game]) (:value message))
+    (start-game-simulation input-queue)
+    (.log js/console (str "Sending message to server: " message))))
