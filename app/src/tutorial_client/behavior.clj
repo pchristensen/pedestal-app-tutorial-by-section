@@ -51,6 +51,10 @@
     (+ old-value points)
     old-value))
 
+(defn high-score [scores {:keys [player score]}]
+  (let [s ((fnil conj []) scores {:player player :score score})]
+    (reverse (sort-by :score s))))
+
 (defn start-game [inputs]
   (let [active (dataflow/old-and-new inputs [:active-game])
         login (dataflow/old-and-new inputs [:login :name])]
