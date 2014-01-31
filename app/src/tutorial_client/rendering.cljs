@@ -70,6 +70,18 @@
 (defn remove-submit-login-event [_ _ _]
   (events/remove-click-event "login-button"))
 
+(defn add-wait-template [renderer [_ path :as delta] input-queue]
+  (let [parent (render/get-parent-id renderer path)
+        id (render/new-id! renderer path)
+        html (templates/add-template renderer path (:wait-page templates))]
+    (dom/append! (dom/by-id parent) (html {:id id}))))
+
+(defn add-waiting-player [renderer [_ path :as delta] input-queue]
+  (let [parent (render/new-id! renderer (vec (butlast path)) "players")
+        id (render/new-id! renderer path)
+        html (:player templates)]
+    (dom/append! (dom/by-id parent) (html {:id id :player-name (last path)}))))
+
 (defn render-config []
   [[:node-create  [:main] add-template]
    [:node-destroy [:main] destroy-game]
@@ -84,4 +96,10 @@
    [:node-create  [:login] add-login-template]
    [:node-destroy [:login] h/default-destroy]
    [:transform-enable  [:login :name] add-submit-login-handler]
-   [:transform-disable [:login :name] remove-submit-login-event]])
+   [:transform-disable [:login :name] remove-submit-login-event]
+   [:node-create  [:wait] add-wait-template]
+   [:node-destroy [:wait] h/default-destroy]
+   [:transform-enable  [:wait :start] (h/add-send-on-click "start-button")]
+   [:transform-disable [:wait :start] (h/remove-send-on-click "start-button")]
+   [:node-create  [:wait :counters :*] add-waiting-player]
+   [:node-destroy [:wait :counters :*] h/default-destroy]])
