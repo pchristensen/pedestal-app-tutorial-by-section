@@ -55,6 +55,22 @@
   (let [s ((fnil conj []) scores {:player player :score score})]
     (reverse (sort-by :score s))))
 
+(defn clear-end-game [players]
+  (vec (reduce (fn [a b]
+                 (conj a ^:input {msg/type :swap msg/topic [:other-counters b] :value 0}))
+               [^:input {msg/type :swap msg/topic [:my-counter] :value 0}
+                ^:input {msg/type :swap msg/topic [:max-count] :value 0}]
+               (keys players))))
+
+(defn end-game [{:keys [players total active]}]
+  (when (and active (>= total (* (count players) 100)))
+    (let [[player score] (last (sort-by val (seq players)))]
+      (into (clear-end-game players)
+            [{msg/type :swap msg/topic [:active-game] :value false}
+             {msg/type :swap msg/topic [:winner] :value {:player player :score score}}
+             {msg/type :high-score msg/topic [:high-scores] :player player :score score}
+             ^:input {msg/topic msg/app-model msg/type :set-focus :name :wait}]))))
+
 (defn start-game [inputs]
   (let [active (dataflow/old-and-new inputs [:active-game])
         login (dataflow/old-and-new inputs [:login :name])]
@@ -86,7 +102,8 @@
    :transform [[:inc  [:*] inc-transform]
                [:swap [:**] swap-transform]
                [:add-points [:my-counter] add-points]
-               [:debug [:pedestal :**] swap-transform]]
+               [:debug [:pedestal :**] swap-transform]
+               [:high-score [:high-scores] high-score]]
    :debug true
    :effect #{[{[:my-counter] :count [:login :name] :name} publish-counter :map]}
    :derive #{[#{[:pedestal :debug :dataflow-time]} [:pedestal :debug :dataflow-time-max] maximum :vals]
@@ -112,9 +129,12 @@
           [#{[:player-order :*]} (app/default-emitter [:main])]
           [#{[:pedestal :debug :dataflow-time]
              [:pedestal :debug :dataflow-time-max]
-             [:pedestal :debug :dataflow-time-avg]} (app/default-emitter [])]]
+             [:pedestal :debug :dataflow-time-avg]} (app/default-emitter [])]
+          [#{[:winner]} (app/default-emitter [:wait])]
+          [#{[:high-scores]} (app/default-emitter [:wait])]]
    :focus {:login [[:login]]
            :wait  [[:wait]]
            :game  [[:main] [:pedestal]]
            :default :login}
-   :continue #{[#{[:login :name] [:active-game]} start-game]}})
+   :continue #{[#{[:login :name] [:active-game]} start-game]
+               [{[:counters] :players [:total-count] :total [:active-game] :active} end-game :map]}})
