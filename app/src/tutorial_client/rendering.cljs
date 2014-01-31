@@ -70,15 +70,6 @@
 (defn remove-submit-login-event [_ _ _]
   (events/remove-click-event "login-button"))
 
-(defn render-page [renderer [_ path] transmitter]
-  (let [parent (render/get-parent-id renderer path)
-        id (render/new-id! renderer path)
-        html (templates/add-template renderer path (:tutorial-client-page templates))]
-    (dom/append! (dom/by-id parent) (html {:id id :message ""}))))
-
-(defn render-message [renderer [_ path _ new-value] transmitter]
-  (templates/update-t renderer path {:message new-value}))
-
 (defn render-config []
   [[:node-create  [:main] add-template]
    [:node-destroy [:main] destroy-game]
