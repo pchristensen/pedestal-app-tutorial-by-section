@@ -2,19 +2,39 @@
   <div id="content">
     <div class="row-fluid" template="wait" field="id:id">
       <div>
+        <div class="winner" field="content:winner">Morwen wins with a score of 500</div>
+      </div>
+
+      <div>
         <button class="btn btn-success" id="start-button">Start Game</button>
       </div>
 
-      <h2>Current Players</h2>
-      <div id="players">
-        <div template="player" class="player-row" field="id:id,content:player-name">Feanor</div>
-        <div class="player-row">Finfolfin</div>
-        <div class="player-row">Morgoth</div>
-        <div class="player-row">Morwen</div>
-      </div>
+      <div class="row-fluid">
+        <div class="span6">
+          <h2>Current Players</h2>
+          <div id="players">
+            <div template="player" class="player-row" field="id:id,content:player-name">Feanor</div>
+            <div class="player-row">Finfolfin</div>
+            <div class="player-row">Morgoth</div>
+            <div class="player-row">Morwen</div>
+          </div>
 
-      <!-- this is required because of a bug -->
-      <div field="content:something"></div>
+          <!-- this is required because of a bug -->
+          <div field="content:something"></div>
+        </div>
+
+        <div class="span6">
+          <h2>High Scores</h2>
+          <table id="high-scores" field="content:high-scores">
+            <tr template="high-score" class="high-score">
+              <td field="content:player-name">Feanor</td>
+              <td field="content:player-score">500</td>
+            </tr>
+            <tr class="high-score"><td>Morgoth</td><td>350</td></tr>
+            <tr class="high-score"><td>Fingolfin</td><td>310</td></tr>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </_within>
