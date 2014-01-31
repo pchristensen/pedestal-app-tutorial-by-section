@@ -38,3 +38,26 @@
   font-weight: bold;
   margin-top: 50px;
 }
+
+.player-row {
+  line-height: 40px;
+  font-size: 30px;
+  font-weight: bold;
+  padding-left: 10px;
+  color: #888;
+}
+
+.high-score td {
+  line-height: 40px;
+  font-size: 30px;
+  font-weight: bold;
+  padding-right: 20px;
+  color: #888;
+}
+
+.winner {
+  font-size: 30px;
+  line-height: 40px;
+  text-align: center;
+  color: #888;
+}

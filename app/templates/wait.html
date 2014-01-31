@@ -1,0 +1,20 @@
+<_within file="application.html">
+  <div id="content">
+    <div class="row-fluid" template="wait" field="id:id">
+      <div>
+        <button class="btn btn-success" id="start-button">Start Game</button>
+      </div>
+
+      <h2>Current Players</h2>
+      <div id="players">
+        <div template="player" class="player-row" field="id:id,content:player-name">Feanor</div>
+        <div class="player-row">Finfolfin</div>
+        <div class="player-row">Morgoth</div>
+        <div class="player-row">Morwen</div>
+      </div>
+
+      <!-- this is required because of a bug -->
+      <div field="content:something"></div>
+    </div>
+  </div>
+</_within>
