@@ -32,5 +32,4 @@
 
 (defn services-fn [message input-queue]
   (if (and (= (msg/topic message) [:active-game]) (:value message))
-    (start-game-simulation input-queue)
-    (.log js/console (str "Sending message to server: " message))))
+    (start-game-simulation input-queue)))
