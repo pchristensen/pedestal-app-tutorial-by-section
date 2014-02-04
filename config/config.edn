@@ -112,4 +112,15 @@
                          :out-file "tutorial-client.js"
                          :main tutorial_client.start
                          :use-api-server? true
-                         :order 6}}}}
+                         :order 6}
+            :worker-ui {:uri "/tutorial-client-dev-worker-ui.html"
+                        :name "Worker UI"
+                        :order 7
+                        :out-file "tutorial-client-dev-worker-ui.js"
+                        :main tutorial_client.simulated.worker_start
+                        :output-root :tools-public
+                        :template "application.html"
+                        :workers {"sim_worker" #{"tutorial_client/behavior.js"
+                                                 "tutorial_client/worker/.*"
+                                                 "tutorial_client/simulated/worker.js"
+                                                 "tutorial_client/simulated/services.js"}}}}}}
