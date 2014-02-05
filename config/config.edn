@@ -17,7 +17,9 @@
           ;; any files which use macros to read in templates. This
           ;; will force recompilation of these files and update
           ;; the templates.
-          :triggers {:html ["tutorial_client/rendering\\.js$"]}}
+          :triggers {:html ["tutorial_client/rendering\\.js$"]}
+          :ignore ["tutorial_client.simulated.worker.js"
+                   "tutorial_client.worker.js"]}
   ;; General application level configuration
   :application {;; The directory where all generated JavaScript for
                 ;; this application will be written.
@@ -105,17 +107,9 @@
                     :order 5
                     :output-root :tools-public
                     :template "tooling.html"}
-            :production {:uri "/tutorial-client.html"
-                         :name "Production"
-                         :optimizations :advanced
-                         :compiler-options {:externs ["app/externs/game.js"]}
-                         :out-file "tutorial-client.js"
-                         :main tutorial_client.start
-                         :use-api-server? true
-                         :order 6}
             :worker-ui {:uri "/tutorial-client-dev-worker-ui.html"
                         :name "Worker UI"
-                        :order 7
+                        :order 3
                         :out-file "tutorial-client-dev-worker-ui.js"
                         :main tutorial_client.simulated.worker_start
                         :output-root :tools-public
@@ -123,4 +117,27 @@
                         :workers {"sim_worker" #{"tutorial_client/behavior.js"
                                                  "tutorial_client/worker/.*"
                                                  "tutorial_client/simulated/worker.js"
-                                                 "tutorial_client/simulated/services.js"}}}}}}
+                                                 "tutorial_client/simulated/services.js"}}}
+            :worker-development {:uri "/tutorial-client-worker-dev.html"
+                                 :use-api-server? true
+                                 :name "Worker Development"
+                                 :out-file "tutorial-client-worker-dev.js"
+                                 :main tutorial_client.worker_start
+                                 :order 5
+                                 :template "application.html"
+                                 :workers {"worker" #{"tutorial_client/behavior.js"
+                                                      "tutorial_client/worker/.*"
+                                                      "tutorial_client/worker.js"
+                                                      "tutorial_client/services.js"}}}
+            :production {:uri "/tutorial-client.html"
+                         :use-api-server? true
+                         :name "Production"
+                         :optimizations :advanced
+                         :out-file "tutorial-client.js"
+                         :main tutorial_client.worker_start
+                         :order 7
+                         :compiler-options {:externs ["app/externs/game.js"]}
+                         :workers {"worker" #{"tutorial_client/behavior.js"
+                                              "tutorial_client/worker/.*"
+                                              "tutorial_client/worker.js"
+                                              "tutorial_client/services.js"}}}}}}
